@@ -55,4 +55,45 @@ public class BanksController {
 //        return new ResponseEntity<>(requestedBank.get(), HttpStatus.OK);
 
     }
+
+    // Can use PutMapping OR PostMapping
+    @PostMapping ("/{id}")
+    public ResponseEntity<?> postOneById(@PathVariable Long id, @RequestBody Bank newBankData) {
+        Bank requestedBank = bankRepository.findById(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        // Option 1     trusting no interceptor will modify data in the middle
+//        return ResponseEntity.ok(bankRepository.save(newBankData));   // newBankData must contain ALL fields
+
+        // Option 2     Allows us to only change data provided to us, validates data at same time, only changes data we allow to be changed
+        if (!newBankData.getName().equals("")) {        // Key MUST exist
+            requestedBank.setName(newBankData.getName());
+        }
+        if (newBankData.getPhoneNumber() != null && newBankData.getPhoneNumber().length() >= 3) {     // Key DOES NOT need to exist, if it does then cannot be empty
+            requestedBank.setPhoneNumber(newBankData.getPhoneNumber());
+        }
+        return ResponseEntity.ok(bankRepository.save(requestedBank));
+    }
+
+    @DeleteMapping ("/{id}")
+    public ResponseEntity<?> deleteOneBankById(@PathVariable Long id) {
+        // If return is unwanted, the below line is negligible - deleteById only fails if void is provided and that cannot be due to path
+        Bank requestedBank = bankRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+        bankRepository.deleteById(id);
+        return ResponseEntity.ok(requestedBank);
+    }
+
+    @GetMapping ("/name/{name}")
+    public ResponseEntity<?> findOneBankByName(@PathVariable String name) {
+        Bank requestedBank = bankRepository.findByName(name).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+        return new ResponseEntity<>(requestedBank, HttpStatus.OK);
+    }
+
+    @GetMapping ("/areaCode/{areaCode}")
+    public ResponseEntity<?> findAllBanksByAreaCode(@PathVariable String areaCode) {
+        return new ResponseEntity<>(bankRepository.getAllAreaCodes(areaCode), HttpStatus.OK);
+    }
 }
