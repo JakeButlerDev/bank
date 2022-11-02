@@ -34,7 +34,7 @@ public class BanksController {
     @GetMapping ("/")
     public ResponseEntity<?> getAllBanks() {
 
-        List<Bank> allBanks = bankRepository.findAll();
+//        List<Bank> allBanks = bankRepository.findAll();
 //        return new ResponseEntity<>(allBanks, HttpStatus.OK);
         return new ResponseEntity<>(bankRepository.findAll(), HttpStatus.OK);    // Alternate option to move inline
 
