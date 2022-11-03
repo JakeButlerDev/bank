@@ -1,9 +1,6 @@
 package com.careerdevs.bank.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Customer {
@@ -18,14 +15,27 @@ public class Customer {
     private Integer age;
     private String location;
 
+    @ManyToOne
+    @JoinColumn(name = "bank_id", referencedColumnName = "id")
+    private Bank bank;
+
     public Customer() { }
 
+    // This constructor is for our ROUTES. We expect user data here
     public Customer(String firstName, String lastName, String email, Integer age, String location) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.age = age;
         this.location = location;
+    }
+
+    public Bank getBank() {
+        return bank;
+    }
+
+    public void setBank(Bank bank) {
+        this.bank = bank;
     }
 
     public Long getId() {
