@@ -1,6 +1,7 @@
 package com.careerdevs.bank.controllers;
 
 import com.careerdevs.bank.models.Bank;
+import com.careerdevs.bank.models.Customer;
 import com.careerdevs.bank.repositories.BankRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -95,5 +96,13 @@ public class BanksController {
     @GetMapping ("/areaCode/{areaCode}")
     public ResponseEntity<?> findAllBanksByAreaCode(@PathVariable String areaCode) {
         return new ResponseEntity<>(bankRepository.getAllAreaCodes(areaCode), HttpStatus.OK);
+    }
+
+    @GetMapping ("/customer/{id}")
+    public ResponseEntity<?> findBankByCustomerId(@PathVariable Long id) {
+        Bank foundBank = bankRepository.getByCustomers_id(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+        return new ResponseEntity<>(foundBank, HttpStatus.OK);
     }
 }

@@ -1,9 +1,12 @@
 package com.careerdevs.bank.models;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Bank {
@@ -13,6 +16,12 @@ public class Bank {
     private String name;
     private String location;
     private String phoneNumber;
+
+    @OneToMany(mappedBy = "bank", fetch = FetchType.LAZY)   // If issues, change lazy to eager
+//    @JsonIncludeProperties({"firstName", "lastName", "id"})
+    @JsonIgnoreProperties({"email", "age", "location", "bank"}) // Same result as commented line above - Ignore is blacklist, Include whitelist
+    private List<Customer> customers;
+//     Can use Sets instead of list to enforce uniqueness
 
     public Bank(String name, String location, String phoneNumber) {
         this.name = name;
@@ -24,6 +33,14 @@ public class Bank {
     public Bank() {
 
     }
+
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+//
+//    public void setCustomers(List<Customer> customers) {
+//        this.customers = customers;
+//    }
 
     public Long getId() {
         return id;

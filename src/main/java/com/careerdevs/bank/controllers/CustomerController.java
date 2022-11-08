@@ -52,6 +52,7 @@ public class CustomerController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    //TODO: Currently updates or creates, change to only update
     @PutMapping ("/update")
     public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) {
         Customer updatedCustomer = customerRepository.save(customer);
@@ -66,8 +67,8 @@ public class CustomerController {
     }
 
     @GetMapping("/lastname/{lastName}")
-    public ResponseEntity<Customer> getOneByLastName(@PathVariable String lastName) {
-        Customer foundCustomer = customerRepository.findByLastName(lastName);
+    public ResponseEntity<List<Customer>> getOneByLastName(@PathVariable String lastName) {
+        List<Customer> foundCustomer = customerRepository.findAllByLastName(lastName);
 
         return new ResponseEntity<>(foundCustomer, HttpStatus.OK);
     }
