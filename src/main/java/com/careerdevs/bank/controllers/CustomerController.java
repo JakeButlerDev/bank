@@ -52,10 +52,29 @@ public class CustomerController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    //TODO: Currently updates or creates, change to only update
-    @PutMapping ("/update")
-    public ResponseEntity<Customer> updateCustomer(@RequestBody Customer customer) {
-        Customer updatedCustomer = customerRepository.save(customer);
+    @PostMapping ("/customerid/{id}")
+    public ResponseEntity<Customer> updateCustomer(@PathVariable Long id, @RequestBody Customer customerData) {
+        Customer updatedCustomer = customerRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+        if (!customerData.getEmail().equals("")) {
+            updatedCustomer.setEmail(customerData.getEmail());
+        }
+        if (customerData.getAge() != null && customerData.getAge() >= 18) {
+            updatedCustomer.setAge(customerData.getAge());
+        }
+        if (!customerData.getEmail().equals("")) {
+            updatedCustomer.setEmail(customerData.getEmail());
+        }
+        if (!customerData.getLocation().equals("")) {
+            updatedCustomer.setLocation(customerData.getLocation());
+        }
+        if (!customerData.getFirstName().equals("")) {
+            updatedCustomer.setFirstName(customerData.getFirstName());
+        }
+        if (!customerData.getLastName().equals("")) {
+            updatedCustomer.setLastName(customerData.getLastName());
+        }
         return new ResponseEntity<>(updatedCustomer, HttpStatus.OK);
     }
 
