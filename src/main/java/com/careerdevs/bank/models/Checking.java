@@ -1,6 +1,10 @@
 package com.careerdevs.bank.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -17,11 +21,12 @@ public class Checking {
 
     @ManyToMany
     @JoinTable(
-            name = "customers_accounts",
-            joinColumns = @JoinColumn(name = "customer_id"),
+            name = "customer_id",
+            joinColumns = @JoinColumn(name = "customers_accounts"),
             inverseJoinColumns = @JoinColumn(name = "checkingAccount_id")
     )
-    private List<Customer> customers;
+    @JsonIncludeProperties({"firstName", "lastName", "id", "bank"})
+    private List<Customer> customers = new ArrayList<>();   // Need to initialize the List before we can add new customers to it
 
     public Checking() {
 

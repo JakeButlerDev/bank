@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Set;
 
 //@CrossOrigin
 @RestController
@@ -72,5 +73,26 @@ public class CheckingController {
         );
         checkingRepository.delete(requestedCheckingAccount);
         return ResponseEntity.ok(requestedCheckingAccount);
+    }
+
+    @GetMapping("/bank/{id}")
+    public ResponseEntity<?> getAllAccountsByBankId(@PathVariable("id") Long bankId) {
+        Set<Checking> foundCheckingAccounts =  checkingRepository.findAllByCustomers_Bank_id(bankId);
+        return new ResponseEntity<>(foundCheckingAccounts, HttpStatus.OK);
+    }
+
+    @PostMapping("/addcustomer/{custId}/{accountId}")
+    public ResponseEntity<?> addCustomerToCheckingAccount(@PathVariable Long custId, @PathVariable Long accountId) {
+        // Find account or return 404
+        // Find customer or return 404
+        // Add customer to account's customer list
+        Customer addedCustomer = customerRepository.findById(custId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+        Checking foundAccount = checkingRepository.findById(accountId).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+        );
+        foundAccount.getCustomers().add(addedCustomer);
+        return new ResponseEntity<>(checkingRepository.save(foundAccount), HttpStatus.OK);
     }
 }
