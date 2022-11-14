@@ -1,6 +1,7 @@
 package com.careerdevs.bank.models;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Checking {
@@ -14,6 +15,14 @@ public class Checking {
     private Long balance;
     private Long fee;
 
+    @ManyToMany
+    @JoinTable(
+            name = "customers_accounts",
+            joinColumns = @JoinColumn(name = "customer_id"),
+            inverseJoinColumns = @JoinColumn(name = "checkingAccount_id")
+    )
+    private List<Customer> customers;
+
     public Checking() {
 
     }
@@ -22,6 +31,14 @@ public class Checking {
         this.alias = alias;
         this.balance = balance;
         this.fee = fee;
+    }
+
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
     }
 
     public Long getId() {
