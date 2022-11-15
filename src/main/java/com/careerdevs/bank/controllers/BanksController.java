@@ -20,7 +20,7 @@ public class BanksController {
     @Autowired
     private BankRepository bankRepository;
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<?> createOneBank(@RequestBody Bank newBank) {
         try {
             // validation occurs here

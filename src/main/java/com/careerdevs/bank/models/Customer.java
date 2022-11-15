@@ -23,6 +23,10 @@ public class Customer {
     @JsonIncludeProperties("id")
     private Bank bank;
 
+    @OneToOne
+    @JoinColumn(name = "user", referencedColumnName = "username")
+    private User user;
+
     public Customer() { }
 
     // This constructor is for our ROUTES. We expect user data here
@@ -88,5 +92,13 @@ public class Customer {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }
