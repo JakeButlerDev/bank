@@ -51,8 +51,9 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 //        Random randomNum = new Random();
-        int randomNum = ThreadLocalRandom.current().nextInt();
-        authUser.setLoginToken(Integer.toString(randomNum));
+        int randomNum = ThreadLocalRandom.current().nextInt();  // 2 users could have same token, one possibility to avoid this is use current day/time     OR
+        // concatenate username to end of generated String
+        authUser.setLoginToken(Integer.toString(randomNum) + foundUser.get().getUsername());
         userRepository.save(authUser);
         return new ResponseEntity<>(authUser.getLoginToken(), HttpStatus.OK);
     }

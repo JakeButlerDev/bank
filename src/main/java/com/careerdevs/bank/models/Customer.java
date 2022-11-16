@@ -25,6 +25,7 @@ public class Customer {
 
     @OneToOne
     @JoinColumn(name = "user", referencedColumnName = "username")
+    @JsonIncludeProperties("username")
     private User user;
 
     public Customer() { }

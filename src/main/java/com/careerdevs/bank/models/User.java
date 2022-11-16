@@ -3,18 +3,21 @@ package com.careerdevs.bank.models;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import javax.persistence.UniqueConstraint;
 
 @Entity
 public class User {
 
     @Id
+//    @UniqueConstraint()   possibility to use to enforce uniqueness
     private String username;
 
     private String password;
     private String loginToken;
 
-    @OneToOne(mappedBy = "user")
-    private Customer customer;
+    // Typically this should only be a one directional relationship, you would not want to get user data by customer id
+//    @OneToOne(mappedBy = "user")
+//    private Customer customer;
 
     public User() {
 
