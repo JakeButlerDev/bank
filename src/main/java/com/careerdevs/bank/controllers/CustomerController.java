@@ -30,15 +30,19 @@ public class CustomerController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping ("/{bankId}")
-    public ResponseEntity<Customer> createOneCustomer(@RequestBody Customer newCustomerData, @PathVariable Long bankId) {
+    @PostMapping ("/{bankId}/{loginToken}")
+    public ResponseEntity<Customer> createOneCustomer(@RequestBody Customer newCustomerData, @PathVariable Long bankId, @PathVariable String loginToken) {
         // Before we save customer data, need to find bank by id in repository
         // If bank does not exist, return 400 - Bad Request
         // If bank exists, add to new customer data and save
+        User user = userRepository.findByLoginToken(loginToken).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
+        );
         Bank foundBank = bankRepository.findById(bankId).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST)
         );
 
+        newCustomerData.setUser(user);
         newCustomerData.setBank(foundBank);
         Customer newCustomer = customerRepository.save(newCustomerData);
         return new ResponseEntity<>(newCustomer, HttpStatus.CREATED);
@@ -104,22 +108,22 @@ public class CustomerController {
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
 
-    @PostMapping("/{custId}/token/{loginToken}")
-    public ResponseEntity<?> addUserToCustomer(@PathVariable Long custId, @PathVariable String loginToken) {
-        // accept login token
-        // find user by login token
-        // find customer by id
-        // attach found user to found customer
-        User foundUser = userRepository.findByLoginToken(loginToken).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
-        );
-        Customer foundCustomer = customerRepository.findById(custId).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
-        );
-        foundCustomer.setUser(foundUser);
-        customerRepository.save(foundCustomer);
-        return new ResponseEntity<>(foundCustomer, HttpStatus.OK);
-    }
+//    @PostMapping("/{bankId}/token/{loginToken}")
+//    public ResponseEntity<?> addUserToCustomer(@PathVariable Long bankId, @PathVariable String loginToken) {
+//        // accept login token
+//        // find user by login token
+//        // find customer by id
+//        // attach found user to found customer
+//        User foundUser = userRepository.findByLoginToken(loginToken).orElseThrow(
+//                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+//        );
+//        Customer foundCustomer = customerRepository.findById(bankId).orElseThrow(
+//                () -> new ResponseStatusException(HttpStatus.NOT_FOUND)
+//        );
+//        foundCustomer.setUser(foundUser);
+//        customerRepository.save(foundCustomer);
+//        return new ResponseEntity<>(foundCustomer, HttpStatus.OK);
+//    }
 
     @GetMapping("/self/{loginToken}")
     public ResponseEntity<?> getSelfByLoginToken(@PathVariable String loginToken) {
